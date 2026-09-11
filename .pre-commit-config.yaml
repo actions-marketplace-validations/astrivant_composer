@@ -1,0 +1,30 @@
+repos:
+  - repo: local
+    hooks:
+      - id: ruff
+        name: Ruff
+        entry: .venv/bin/ruff check
+        language: system
+        types: [python]
+      - id: format
+        name: Python format
+        entry: .venv/bin/ruff format --check
+        language: system
+        types: [python]
+      - id: mypy
+        name: mypy
+        entry: .venv/bin/mypy
+        language: system
+        pass_filenames: false
+        types: [python]
+      - id: docstrings
+        name: Google docstrings
+        entry: .venv/bin/pydoclint --config=pyproject.toml
+        language: system
+        types: [python]
+      - id: poetry-check
+        name: Poetry metadata and lockfile
+        entry: poetry check --lock
+        language: system
+        files: ^(pyproject.toml|poetry.lock)$
+        pass_filenames: false

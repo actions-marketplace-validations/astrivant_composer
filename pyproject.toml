@@ -1,0 +1,59 @@
+[project]
+name = "astrivant-composer"
+version = "0.1.0"
+description = "Compile Helm workloads into reproducible Docker Compose environments."
+readme = "README.md"
+requires-python = ">=3.13,<4.0"
+authors = [{name = "Emma Doyle"}]
+dependencies = [
+  "attrs>=25.3,<27", "cattrs>=25.3,<27", "ruamel.yaml>=0.18,<0.20",
+  "PyYAML>=6.0.3,<7", "jsonschema>=4.26,<5", "networkx>=3.4,<4"
+]
+
+[project.scripts]
+composer = "composer.entrypoint:main"
+
+[tool.poetry]
+packages = [{include = "composer", from = "pkg"}]
+include = [{path = "pkg/composer/schemas/*.json", format = ["sdist", "wheel"]}]
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.18"
+ruff = "^0.15"
+pydoclint = "0.6.6"
+pre-commit = "4.6.0"
+types-PyYAML = "^6.0"
+types-jsonschema = "^4.26"
+types-networkx = "^3.4"
+
+[build-system]
+requires = ["poetry-core>=2,<3"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+python_version = "3.13"
+mypy_path = "pkg"
+files = ["pkg", "tests"]
+strict = true
+
+[tool.ruff]
+src = ["pkg"]
+target-version = "py313"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "D", "TC"]
+ignore = ["D200", "D212"]
+
+[tool.ruff.lint.isort]
+required-imports = ["from __future__ import annotations"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.pydoclint]
+style = "google"
+arg-type-hints-in-docstring = true
+check-return-types = true
+skip-checking-raises = true
+require-return-section-when-returning-nothing = true
