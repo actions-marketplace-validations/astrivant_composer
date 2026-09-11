@@ -10,6 +10,7 @@ Docker Compose configuration. Install the checkout as described in the
 - [Runtime profiles](#runtime-profiles)
 - [Rendered manifests](#rendered-manifests)
 - [Comparison and reports](#comparison-and-reports)
+- [Pre-commit](#pre-commit)
 - [Generated files](#generated-files)
 - [Runtime boundaries](#runtime-boundaries)
 - [CLI reference](#cli-reference)
@@ -132,6 +133,50 @@ The JSON report includes service and volume counts, source identities, removed p
 overridden keys and differing paths. Detailed service provenance is populated for
 profile-selected services. It omits configuration values. Logs are JSON objects on
 stderr; the command prints a JSON result summary to stdout.
+
+## Pre-commit
+
+The reusable [`helm-composer` hook](../.pre-commit-hooks.yaml) runs the compiler in a
+pre-commit-managed Python 3.13 environment. When consuming the hook from a version-pinned
+Composer repository, configure `args` with your chart, runtime profile and output paths.
+Helm and built chart dependencies must be available on the host.
+
+Add the hook's public repository to the application repository's
+`.pre-commit-config.yaml`, pinning a revision that contains the manifest:
+
+```yaml
+repos:
+  - repo: https://github.com/astrivant/composer
+    rev: d6e73c76c25136456c525e066cce71b127e41209
+    hooks:
+      - id: helm-composer
+        args:
+          - --chart
+          - helm/example
+          - --profile
+          - compose.profile.yaml
+          - --output
+          - compose.yaml
+        files: ^(helm/example/|compose\.profile\.yaml$|\.pre-commit-config\.yaml$)
+```
+
+Pre-commit installs Composer and its Python dependencies in an isolated environment.
+The manifest supplies the executable, Python version, serial execution and
+`pass_filenames: false`. Helm remains a host prerequisite. Adjust `files` to cover the
+chart and all profile/values inputs; filenames decide whether to run and are not passed
+to the compiler. Update the pinned revision deliberately when adopting compiler changes.
+
+For local compiler development, a `repo: local` hook can instead use an installed
+`composer` executable with `language: system`, the same arguments and file filter, plus
+`pass_filenames: false` and `require_serial: true`.
+
+The hook regenerates the file. If it changes tracked output, pre-commit stops the
+commit so you can review and stage the result, then retry. Add `--check` to `args`
+when you want a read-only drift gate instead. Exercise the configured path filter with:
+
+```sh
+pre-commit run helm-composer --files helm/example/values.yaml
+```
 
 ## Generated files
 

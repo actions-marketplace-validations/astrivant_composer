@@ -94,19 +94,24 @@ poetry run composer --chart ./path/to/chart \
 A matching configuration returns `0`. Use `--compare` to check an independent reference
 and `--report` to save compilation provenance; see [comparison and reports](docs/usage.md#comparison-and-reports).
 
+The reusable [`helm-composer` pre-commit hook](.pre-commit-hooks.yaml) regenerates
+Compose when chart inputs change. See [hook setup](docs/usage.md#pre-commit) for
+configuration and handling generated changes.
+
 This repository's [CircleCI workflow](.circleci/config.yml) runs linting, strict typing,
 docstring validation and compiler tests with real Helm fixtures.
 
 ## Repository map
 
-| Location                                         | Responsibility                                          |
-| ------------------------------------------------ | ------------------------------------------------------- |
-| [`pkg/composer/`](pkg/composer/)                 | CLI, profile resolution and compilation.                |
-| [`pkg/composer/ast/`](pkg/composer/ast/)         | Kubernetes and Compose models and conversion utilities. |
-| [`pkg/composer/schemas/`](pkg/composer/schemas/) | Bundled runtime profile and Compose JSON Schemas.       |
-| [`tests/`](tests/)                               | Compiler unit tests and real Helm rendering tests.      |
-| [`.circleci/config.yml`](.circleci/config.yml)   | Portable compiler verification workflow.                |
-| [`docs/`](docs/)                                 | Usage, profile reference and contributor documentation. |
+| Location                                           | Responsibility                                          |
+| -------------------------------------------------- | ------------------------------------------------------- |
+| [`pkg/composer/`](pkg/composer/)                   | CLI, profile resolution and compilation.                |
+| [`pkg/composer/ast/`](pkg/composer/ast/)           | Kubernetes and Compose models and conversion utilities. |
+| [`pkg/composer/schemas/`](pkg/composer/schemas/)   | Bundled runtime profile and Compose JSON Schemas.       |
+| [`tests/`](tests/)                                 | Compiler unit tests and real Helm rendering tests.      |
+| [`.circleci/config.yml`](.circleci/config.yml)     | Portable compiler verification workflow.                |
+| [`.pre-commit-hooks.yaml`](.pre-commit-hooks.yaml) | Reusable Compose generation hook.                       |
+| [`docs/`](docs/)                                   | Usage, profile reference and contributor documentation. |
 
 ## Development
 
