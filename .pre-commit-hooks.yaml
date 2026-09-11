@@ -1,0 +1,9 @@
+- id: helm-composer
+  name: Generate Docker Compose from Helm
+  description: Compile a Helm chart and runtime profile into a validated Docker Compose configuration.
+  entry: composer
+  language: python
+  language_version: python3.13
+  pass_filenames: false
+  require_serial: true
+  files: (^|/)(Chart\.(yaml|lock)|values[^/]*\.ya?ml|values\.schema\.json|templates/.*|charts/.*|compose\.profile\.ya?ml)$
