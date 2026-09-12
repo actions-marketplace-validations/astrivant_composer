@@ -33,7 +33,7 @@ jobs:
 ```
 
 This generates and commits `compose.yaml`. The Action installs Python 3.13, Composer
-from its own checkout, and Helm 3.19. Chart dependencies must already be built or
+from its own checkout, and Helm 4.3.0. Chart dependencies must already be built or
 vendored. Linux and macOS runners are supported.
 
 ## Watch a different directory

@@ -52,7 +52,7 @@ runs:
     - uses: azure/setup-helm@v4.3.0
       if: inputs.chart != '' || inputs.manifests == ''
       with:
-        version: v3.19.0
+        version: v4.3.0
     - name: Install Composer
       shell: bash
       run: |

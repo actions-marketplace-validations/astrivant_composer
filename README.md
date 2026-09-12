@@ -20,7 +20,7 @@ output, or run Composer locally to get started.
 
 ## Install
 
-Requires Python 3.13+ and Poetry 2.1+. Chart rendering requires Helm 3 with the chart's
+Requires Python 3.13+ and Poetry 2.1+. Chart rendering requires Helm 4 with the chart's
 dependencies already built. Docker Compose is needed to inspect or run the output.
 
 From a checkout of this repository:

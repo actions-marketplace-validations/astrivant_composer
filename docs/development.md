@@ -14,7 +14,7 @@ This guide is for contributors modifying Composer. Application authors can start
 
 ## Environment
 
-Use Python 3.13+, Poetry 2.1+ and Helm 3. `.python-version` selects the local interpreter,
+Use Python 3.13+, Poetry 2.1+ and Helm 4. `.python-version` selects the local interpreter,
 and `poetry.toml` keeps the virtual environment inside the checkout. The Poetry lockfile
 pins contributor and CI dependencies.
 

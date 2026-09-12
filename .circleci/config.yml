@@ -8,7 +8,7 @@ jobs:
       - run:
           name: Install Helm and Poetry
           command: |
-            curl -fsSL https://get.helm.sh/helm-v3.19.0-linux-amd64.tar.gz -o /tmp/helm.tar.gz
+            curl -fsSL https://get.helm.sh/helm-v4.3.0-linux-amd64.tar.gz -o /tmp/helm.tar.gz
             tar -xzf /tmp/helm.tar.gz -C /tmp
             sudo install /tmp/linux-amd64/helm /usr/local/bin/helm
             pip install poetry==2.1.3
