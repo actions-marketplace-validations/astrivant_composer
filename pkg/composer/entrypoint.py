@@ -292,9 +292,12 @@ def write_outputs(compilation: Compilation, output: Path) -> None:
     )
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     """
     Render, compile, validate, compare, and optionally write a Compose configuration.
+
+    Args:
+        argv (list[str] | None): Explicit CLI arguments, or process arguments when omitted.
 
     Returns:
         int: Zero for success, one for drift, or two for an invalid compilation.
@@ -343,7 +346,7 @@ def main() -> int:
         default="WARNING",
         help="Compiler log severity",
     )
-    args = parser.parse_args(namespace=Arguments())
+    args = parser.parse_args(argv, namespace=Arguments())
     handler = logging.StreamHandler()
     handler.setFormatter(JsonFormatter())
     logging.basicConfig(level=args.log_level, handlers=[handler], force=True)

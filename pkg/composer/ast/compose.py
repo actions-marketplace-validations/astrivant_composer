@@ -290,6 +290,7 @@ def build_services(
     secrets: dict[tuple[str, str], SecretData],
     state: ConversionState,
     args: argparse.Namespace,
+    sources: dict[str, Resource] | None = None,
 ) -> dict[str, ComposeService]:
     """
     Compile Kubernetes workload resources into Compose services.
@@ -300,6 +301,7 @@ def build_services(
         secrets (dict[tuple[str, str], SecretData]): Indexed Secret data.
         state (ConversionState): Mutable compilation state.
         args (argparse.Namespace): Parsed command-line options.
+        sources (dict[str, Resource] | None): Optional output service-to-resource index.
 
     Returns:
         dict[str, ComposeService]: Compose service mapping.
@@ -356,6 +358,8 @@ def build_services(
                 args=args,
             )
             services[service_name] = service
+            if sources is not None:
+                sources[service_name] = resource
             log.info(
                 (
                     "Translated workload kind=%s name=%s container=%s service=%s "

@@ -1,0 +1,76 @@
+name: Helm to Docker Compose
+description: Get a Docker Compose file for free from your Helm chart or Kubernetes manifests.
+author: Astrivant
+branding:
+  icon: layers
+  color: blue
+inputs:
+  watch-directory:
+    description: Directory whose pushed changes trigger generation; also the default chart path.
+    default: helm/
+  commit:
+    description: Commit changed generated files and push to the triggering branch (requires contents write).
+    default: 'true'
+  chart:
+    description: Helm chart directory; defaults to watch-directory when manifests are absent.
+  manifests:
+    description: Rendered manifest paths, one per line; mutually exclusive with chart.
+  values:
+    description: Helm values paths, one per line, in override order.
+  profile:
+    description: Optional runtime profile path.
+  output:
+    description: Generated Compose file path.
+    default: compose.yaml
+  report:
+    description: Optional JSON compilation report path.
+  check:
+    description: Check committed output for drift without writing files.
+    default: 'false'
+  release:
+    description: Helm release name.
+    default: composer
+  namespace:
+    description: Helm release namespace.
+    default: default
+outputs:
+  skipped:
+    description: Whether no changes occurred in the watched directory.
+    value: ${{ steps.generate.outputs.skipped }}
+  committed:
+    description: Whether generated changes were committed and pushed.
+    value: ${{ steps.generate.outputs.committed }}
+  compose-file:
+    description: Absolute path to the Compose file.
+    value: ${{ steps.generate.outputs.compose-file }}
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+    - uses: azure/setup-helm@v4.3.0
+      if: inputs.chart != '' || inputs.manifests == ''
+      with:
+        version: v3.19.0
+    - name: Install Composer
+      shell: bash
+      run: |
+        python -m venv "$RUNNER_TEMP/composer-action-venv"
+        "$RUNNER_TEMP/composer-action-venv/bin/python" -m pip install "$GITHUB_ACTION_PATH"
+    - name: Generate Compose
+      id: generate
+      shell: bash
+      env:
+        COMPOSER_WATCH_DIRECTORY: ${{ inputs.watch-directory }}
+        COMPOSER_COMMIT: ${{ inputs.commit }}
+        COMPOSER_CHART: ${{ inputs.chart }}
+        COMPOSER_MANIFESTS: ${{ inputs.manifests }}
+        COMPOSER_VALUES: ${{ inputs.values }}
+        COMPOSER_PROFILE: ${{ inputs.profile }}
+        COMPOSER_OUTPUT: ${{ inputs.output }}
+        COMPOSER_REPORT: ${{ inputs.report }}
+        COMPOSER_CHECK: ${{ inputs.check }}
+        COMPOSER_RELEASE: ${{ inputs.release }}
+        COMPOSER_NAMESPACE: ${{ inputs.namespace }}
+      run: '"$RUNNER_TEMP/composer-action-venv/bin/python" "$GITHUB_ACTION_PATH/scripts/action.py"'

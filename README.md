@@ -59,6 +59,10 @@ reproduced by translating containers.
 
 ## Architecture
 
+[Native GitOps ordering](docs/gitops-ordering.md) translates Argo CD phases and sync
+waves, Application ownership, and Flux Kustomization/HelmRelease dependencies into
+Compose startup gates.
+
 ```mermaid
 flowchart LR
     Chart[Helm chart and values] --> Helm[Helm rendering]
@@ -81,6 +85,10 @@ See [runtime profiles](docs/profiles.md) for selection and override rules, and
 [compiler internals](docs/development.md#compilation-pipeline) for implementation details.
 
 ## CI
+
+[Get a Docker Compose file for free with the GitHub Action](docs/github-action.md).
+The reusable Action watches `helm/` by default and commits changed Compose output back
+to your branch. Its watch directory is configurable, and it also supports drift checks.
 
 After installing Composer and preparing your chart dependencies, check that committed
 Compose output still agrees with its chart and profile:

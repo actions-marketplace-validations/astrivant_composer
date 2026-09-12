@@ -27,6 +27,7 @@ from composer.ast.kubernetes import (
     workload_pod_spec,
 )
 from composer.exceptions import CompilationError
+from composer.ordering import apply_ordering, startup_resource
 from composer.profile import (
     Context,
     bind,
@@ -174,6 +175,8 @@ def compile_resources(
         CompilationError: Sources, bindings, or startup dependencies are invalid.
         ValueError: Resource quantities or conversion inputs are malformed.
     """
+    resources = [resource for resource in resources if startup_resource(resource)]
+    sources: dict[str, Resource] = {}
     state = ConversionState()
     services: dict[str, object] = {}
     provenance: dict[str, object] = {}
@@ -187,6 +190,7 @@ def compile_resources(
             collect_secrets(resources, True),
             state,
             args,
+            sources,
         )
         for name, converted in native.items():
             service = mapping(unstructure_compose_service(converted))
@@ -208,6 +212,7 @@ def compile_resources(
             service = remove(service, [str(path) for path in as_list(rule.get("remove"))])
             service = merge(service, mapping(bind(rule.get("set", {}), context)))
             services[name] = service
+            sources[name] = resource
             provenance[name] = {
                 "kind": resource.obj.kind,
                 "name": resource.obj.metadata["name"],
@@ -230,6 +235,7 @@ def compile_resources(
         document["volumes"] = volumes
     if profile.get("networks"):
         document["networks"] = profile["networks"]
+    apply_ordering(resources, sources, services)
     validate_dependencies(document)
     # Dropped Kubernetes mounts must not cause unused Secret files to be written.
     mounts = [
