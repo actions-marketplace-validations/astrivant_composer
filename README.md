@@ -2,11 +2,11 @@
 
 <img src="img/logos/logo-transparent.png" alt="Astrivant logo" width="25%" />
 
-Composer turns Helm charts and Kubernetes manifests into Docker Compose environments
-for local development and single-machine deployments. It translates container
-configuration, applies declarative runtime profiles, and validates the generated
-Compose file. Keep your chart as the shared source of configuration, describe local
-runtime choices explicitly, and check generated output for drift in CI.
+Get a Docker Compose file for free in your project, built from the Helm charts you
+already maintain. Composer turns those charts into a local development environment
+and keeps your Compose file in sync as your charts change. Add the
+[GitHub Action](docs/github-action.md) to automatically generate and commit updated
+output, or run Composer locally to get started.
 
 **Table of contents**
 
