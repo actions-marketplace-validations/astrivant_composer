@@ -63,6 +63,8 @@ def watched_changes(directory: str) -> bool:
         raise SystemExit("Push event must contain valid before and after commit IDs")
     if set(after) == {"0"}:
         return False
+    # Push payloads identify annotated tag objects; compare their immutable source commits.
+    after = git("rev-parse", "--verify", after + "^{commit}")
     if git("rev-parse", "HEAD") != after:
         raise SystemExit("Checkout must match the triggering commit")
     pathspec = ":(top,literal)" + watched
